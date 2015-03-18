@@ -15,16 +15,24 @@ var Scrapper = {
 	},
 
 	init: function (fileId, cliOptions) {
-		this.fileId = fileId;
-		var options = this.options;
+		this.fileId = fileId || this.getDefaultFileId();
 
 		if ( cliOptions ) {
+			var options = this.options;
 			cliOptions.split(',').forEach(function (cliOpt) {
 				if ( options.hasOwnProperty(cliOpt) ) {
 					options[cliOpt] = true;
 				}
 			});
 		}
+	},
+
+	getDefaultFileId: function () {
+		var d = new Date(),
+			y = d.getFullYear() - 2000, // 20XX
+			m = d.getMonth();  // [0,11]
+
+		return m === 0 ? (y - 1) + '-12' : y + '-' + ( m >= 10 ? m : '0' + m );
 	},
 
 	getFilePath: function (ext) {
