@@ -168,14 +168,21 @@ var Scrapper = {
 
 		sheet = workbook.Sheets[sheetMapping.name];
 
+		if ( this.options.verbose ) {
+			this.log('Mapping');
+		}
 		var data = {};
 		for ( var key in sheetMapping.cells ) {
-			//console.log('###');
-			//console.log(key);
-			//console.log(sheetMapping.cells[key]);
+			if ( this.options.verbose ) {
+				console.log(sheetMapping.cells[key] + ':\t' + key);
+			}
 			data[key] = sheet[ sheetMapping.cells[key] ].v;
 		}
 
+		if ( this.options.verbose ) {
+			this.log('File data:');
+			console.log(data);
+		}
 		return data;
 	},
 
