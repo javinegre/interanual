@@ -3,6 +3,7 @@
 var http = require('http'),
 	fs = require('fs'),
 	XLS = require('xlsjs'),
+	colors = require('colors/safe'),
 	Historical = require('./db');
 
 var Scrapper = {
@@ -121,23 +122,23 @@ var Scrapper = {
 		var isOk = true;
 
 		if ( data.total !== data.hombres + data.mujeres ) {
-			console.log('** failed: data.total !== data.hombres + data.mujeres');
+			this.log('Failed: data.total !== data.hombres + data.mujeres', 'error');
 			isOk = false;
 		}
 		if ( data.totalMenor25 !== data.hombresMenor25 + data.mujeresMenor25 ) {
-			console.log('** failed: data.totalMenor25 !== data.hombresMenor25 + data.mujeresMenor25');
+			this.log('Failed: data.totalMenor25 !== data.hombresMenor25 + data.mujeresMenor25', 'error');
 			isOk = false;
 		}
 		if ( data.totalMayor25 !== data.hombresMayor25 + data.mujeresMayor25 ) {
-			console.log('** failed: data.totalMayor25 !== data.hombresMayor25 + data.mujeresMayor25');
+			this.log('Failed: data.totalMayor25 !== data.hombresMayor25 + data.mujeresMayor25', 'error');
 			isOk = false;
 		}
 		if ( data.total !== data.totalMenor25 + data.totalMayor25 ) {
-			console.log('** failed: data.total !== data.totalMenor25 + data.totalMayor25');
+			this.log('Failed: data.total !== data.totalMenor25 + data.totalMayor25', 'error');
 			isOk = false;
 		}
 		if ( data.total !== data.agricultura + data.industria + data.construccion + data.servicios + data.sinEmpleo ) {
-			console.log('** failed: data.total !== data.agricultura + data.industria + data.construccion + data.servicios + data.sinEmpleo');
+			this.log('Failed: data.total !== data.agricultura + data.industria + data.construccion + data.servicios + data.sinEmpleo', 'error');
 			isOk = false;
 		}
 
@@ -153,7 +154,7 @@ var Scrapper = {
 		});
 
 		if ( data.total !== regionsTotal ) {
-			console.log('** failed: data.total !== regionsTotal');
+			this.log('Failed: data.total !== regionsTotal', 'error');
 			isOk = false;
 		}
 
@@ -178,14 +179,37 @@ var Scrapper = {
 		return data;
 	},
 
+	log: function (message, type) {
+		var badge;
+		switch (type) {
+			case 'error':
+				badge = [' * ', 'white', 'bgRed'];
+				break;
+			case 'success':
+				badge = [' i ', 'grey', 'bgGreen'];
+				break;
+			// case 'info':
+			default:
+				badge = [' i ', 'grey', 'bgBlue'];
+				break;
+		}
+		console.log(colors[badge[1]][badge[2]](badge[0]) + ' ' + message);
+	},
+
 	downloadFile: function(url, dest, cb) {
+		var scrapper = this;
+
+		this.log('Downloading file: ' + url);
+
 		var file = fs.createWriteStream(dest);
 		var request = http.get(url, function(response) {
 			response.pipe(file);
 			file.on('finish', function() {
+				scrapper.log('File saved: ' + dest, 'success');
 				file.close(cb);  // close() is async, call cb after close completes.
 			});
 		}).on('error', function(err) { // Handle errors
+			scrapper.log('Error downloading file, exiting', 'error');
 			fs.unlink(dest); // Delete the file async. (But we don't check the result)
 			process.exit(1);
 		});
@@ -195,15 +219,22 @@ var Scrapper = {
 		var scrapper = this,
 			data;
 
+		this.log('Scrapping data: ' + this.getFilePath());
+
 		data = this.readXls();
 
 		if ( ! this.checkXlsDataIntegrity(data) ) {
+			this.log('Failed checking data integrity, exiting', 'error');
 			process.exit(2);
 		}
 
 		data.periodo = this.fileId;
 		Historical.savePeriod(data, function (result) {
-			console.log('Period saved? ' + result);
+			result
+				? scrapper.log('Saved into DB', 'success')
+				: scrapper.log('DB problem, could not upsert', 'error');
+
+			process.exit(0);
 		});
 	},
 
