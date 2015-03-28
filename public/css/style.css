@@ -1,0 +1,42 @@
+
+@import url(http://fonts.googleapis.com/css?family=Bitter:400,700|Open+Sans:400italic,400,600);
+
+body {
+    font-family: 'Open Sans', sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+    font-family: 'Bitter', serif;
+}
+
+svg.ianual-chart {
+    font-family: 'Bitter', serif;
+}
+
+line.diff-line.active {
+    opacity: 1;
+    stroke-width: 3px;
+}
+
+svg text {
+    fill: #808080;
+    font-size: 12px;
+}
+
+#chart-wrapper {
+    width: 80%;
+    float: left;
+}
+
+#info-box {
+    width: 20%;
+    float: right;
+}
+
+#metric-selector {
+    clear: both;
+}
+
+#metric-selector li.toggle {
+    display: inline-block;
+}
