@@ -11,43 +11,22 @@
 
         <div id="info-box"></div>
 
-        <ul id="metric-selector">
-            <li class="toggle" data-key="total">total</li>
-            <li class="toggle" data-key="hombres">hombres</li>
-            <li class="toggle" data-key="mujeres">mujeres</li>
-            <li class="toggle" data-key="hombresMenor25">hombresMenor25</li>
-            <li class="toggle" data-key="mujeresMenor25">mujeresMenor25</li>
-            <li class="toggle" data-key="totalMenor25">totalMenor25</li>
-            <li class="toggle" data-key="hombresMayor25">hombresMayor25</li>
-            <li class="toggle" data-key="mujeresMayor25">mujeresMayor25</li>
-            <li class="toggle" data-key="totalMayor25">totalMayor25</li>
-            <li class="toggle" data-key="agricultura">agricultura</li>
-            <li class="toggle" data-key="industria">industria</li>
-            <li class="toggle" data-key="construccion">construccion</li>
-            <li class="toggle" data-key="servicios">servicios</li>
-            <li class="toggle" data-key="sinEmpleo">sinEmpleo</li>
-            <li class="title">Regions</li>
-            <li class="toggle" data-key="andalucia">andalucia</li>
-            <li class="toggle" data-key="aragon">aragon</li>
-            <li class="toggle" data-key="asturias">asturias</li>
-            <li class="toggle" data-key="balears">balears</li>
-            <li class="toggle" data-key="canarias">canarias</li>
-            <li class="toggle" data-key="cantabria">cantabria</li>
-            <li class="toggle" data-key="castillaMancha">castillaMancha</li>
-            <li class="toggle" data-key="castillaLeon">castillaLeon</li>
-            <li class="toggle" data-key="catalunya">catalunya</li>
-            <li class="toggle" data-key="comValenciana">comValenciana</li>
-            <li class="toggle" data-key="extremadura">extremadura</li>
-            <li class="toggle" data-key="galicia">galicia</li>
-            <li class="toggle" data-key="madrid">madrid</li>
-            <li class="toggle" data-key="murcia">murcia</li>
-            <li class="toggle" data-key="navarra">navarra</li>
-            <li class="toggle" data-key="paisVasco">paisVasco</li>
-            <li class="toggle" data-key="rioja">rioja</li>
-            <li class="toggle" data-key="ceuta">ceuta</li>
-            <li class="toggle" data-key="melilla">melilla</li>
-        </ul>
+        <div id="mode-selector">
+            <input type="radio" name="chart-mode" value="interannual" />interannual
+            <input type="radio" name="chart-mode" value="comparative" />comparative
+        </div>
+
+        <div id="metric-selector">
+            <ul class="general-selector"></ul>
+            <ul class="reginal-selector"></ul>
+        </div>
     </body>
+
+    <script type="text/template" id="metric-list-tpl">
+        <% _.each(metrics, function (m) { %>
+            <li class="toggle <%= (m.active) ? 'active' : '' %>" data-key="<%= m.key %>"><%= m.title %></li>
+        <% }); %>
+    </script>
 
     <script type="text/template" id="info-box-tpl">
         <div class="current">
