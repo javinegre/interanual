@@ -24,13 +24,13 @@ svg text {
 }
 
 #chart-wrapper {
-    width: 80%;
-    float: left;
+    width: 75%;
+    float: right;
 }
 
 #info-box {
-    width: 20%;
-    float: right;
+    width: 25%;
+    float: left;
 }
 
 #metric-selector {
@@ -46,4 +46,15 @@ svg text {
 #metric-selector li.toggle.active {
     color: #202020;
     font-weight: 600;
+}
+
+h1 {
+    text-transform: uppercase;
+    line-height: 0.75em;
+}
+h1 span {
+    display: block;
+}
+h1 span.l1 {
+    letter-spacing: 0.15em;
 }
