@@ -223,7 +223,7 @@ IaChart.prototype = {
 				.attr('y1', function (d) { return _this.y(d.y); })
 				.attr('x2', function (d) { return _this.x(d.x); })
 				.attr('y2', function (d) { return _this.y(d.y1y); })
-				.attr('stroke', function (d) { return ( d.y > d.y1y ) ? '#f48fb1' : '#a5d6a7'; })
+				.attr('stroke', function (d) { return _this.getDiffColor(d.y, d.y1y); })
 				.attr('stroke-width', '2px')
 				.attr('opacity', function (d) { return ( d.y1y === null ) ? 0 : .2; })
 				.attr('fill', 'none');
@@ -241,17 +241,16 @@ IaChart.prototype = {
 			.attr('stroke-width', '3px')
 			.attr('fill', 'none');
 
-		this.serie.append('circle')
-			.attr('class', 'serie-dot')
-			.attr('cx', 0)
-			.attr('cy', 0)
-			.attr('r', '4px')
-			.attr('opacity', 0)
-			.attr('fill', '#ffffff')
-			.attr('stroke', this.keysLen === 1 ? '#808080' : function (d) { return _this.color(d.name); })
-			.attr('stroke-width', '3px');
+		if ( this.keysLen === 1 ) {
 
-		if (this.series1y !== null) {
+			this.serie.append('path')
+				.attr('class', 'serie-arrow')
+				.attr('stroke', '#808080')
+				.attr('fill', '#ffffff')
+				.attr('opacity', 0)
+				.attr('stroke-width', '3px')
+				.attr('stroke-linejoin', 'round')
+				.attr('d', 'M-5,2 L0,-7 L5,2 L-5,2 Z');
 
 			this.diffDot = this.svg.append('g')
 				.attr('class', 'diff-dot');
@@ -263,6 +262,17 @@ IaChart.prototype = {
 				.attr('opacity', 0)
 				.attr('fill', '#ffffff')
 				.attr('stroke', '#808080')
+				.attr('stroke-width', '3px');
+		}
+		else {
+			this.serie.append('circle')
+				.attr('class', 'serie-dot')
+				.attr('cx', 0)
+				.attr('cy', 0)
+				.attr('r', '4px')
+				.attr('opacity', 0)
+				.attr('fill', '#ffffff')
+				.attr('stroke', function (d) { return _this.color(d.name); })
 				.attr('stroke-width', '3px');
 		}
 
@@ -283,7 +293,7 @@ IaChart.prototype = {
 			mIdx = Math.floor((m[0] + this.pointWidth / 2) / this.pointWidth);
 
 		var point = this.series[0].values[mIdx],
-			pointColor = point.y1y === null ? '#808080' : ( point.y > point.y1y ) ? '#f48fb1' : '#a5d6a7',
+			pointColor = this.getDiffColor(point.y, point.y1y),
 			pointY = point.y1y === null ? this.y(point.y) : this.y(point.y1y);
 
 		point.y1y1m = this.series[0].values[mIdx-1] && this.series[0].values[mIdx-1].y1y
@@ -292,9 +302,17 @@ IaChart.prototype = {
 
 		this.options.cb(point);
 
-		this.serie.selectAll('circle')
+		this.serie.selectAll('.serie-dot')
 			.attr('opacity', 1)
 			.attr('transform', function (d) { return _this.translateStr(_this.x(point.x), _this.y(d.values[mIdx].y)); });
+
+		this.serie.selectAll('.serie-arrow')
+			.attr('opacity', point.y1y === null ? 0 : 1 )
+			.attr('stroke', _this.getDiffColor(point.y, point.y1y))
+			.attr('transform', function (d) {
+				return _this.translateStr(_this.x(point.x), _this.y(d.values[mIdx].y)) +
+					' rotate(' + ( point.y > point.y1y ? '0' : '180' ) + ')';
+			});
 
 		this.guideLine
 			.attr('opacity', 1)
@@ -314,7 +332,8 @@ IaChart.prototype = {
 	},
 
 	chartMouseOut: function () {
-		this.serie.selectAll('circle').attr('opacity', 0);
+		this.serie.selectAll('.serie-dot').attr('opacity', 0);
+		this.serie.selectAll('.serie-arrow').attr('opacity', 0);
 		this.guideLine.attr('opacity', 0);
 		if (this.diffDot !== null) {
 			this.diffDot.select('circle').attr('opacity', 0);
@@ -339,6 +358,12 @@ IaChart.prototype = {
 		this.emptyChart();
 		this.calculate();
 		this.buildSvg();
+	},
+
+	getDiffColor: function (y, y1) {
+		return y === y1 || y1 === null
+			? '#808080'
+			: y > y1 ? '#d1527c' : '#78a179';
 	},
 
 	translateStr: function (x, y) {
