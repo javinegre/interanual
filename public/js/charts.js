@@ -250,7 +250,7 @@ IaChart.prototype = {
 				.attr('opacity', 0)
 				.attr('stroke-width', '3px')
 				.attr('stroke-linejoin', 'round')
-				.attr('d', 'M-5,2 L0,-7 L5,2 L-5,2 Z');
+				.attr('d', 'M-4,2 L0,-5 L4,2 L-4,2 Z');
 
 			this.diffDot = this.svg.append('g')
 				.attr('class', 'diff-dot');
@@ -258,11 +258,9 @@ IaChart.prototype = {
 			this.diffDot.append('circle')
 				.attr('cx', 0)
 				.attr('cy', 0)
-				.attr('r', '4px')
+				.attr('r', '5px')
 				.attr('opacity', 0)
-				.attr('fill', '#ffffff')
-				.attr('stroke', '#808080')
-				.attr('stroke-width', '3px');
+				.attr('fill', '#ffffff');
 		}
 		else {
 			this.serie.append('circle')
@@ -308,7 +306,7 @@ IaChart.prototype = {
 
 		this.serie.selectAll('.serie-arrow')
 			.attr('opacity', point.y1y === null ? 0 : 1 )
-			.attr('stroke', _this.getDiffColor(point.y, point.y1y))
+			.attr('stroke', pointColor)
 			.attr('transform', function (d) {
 				return _this.translateStr(_this.x(point.x), _this.y(d.values[mIdx].y)) +
 					' rotate(' + ( point.y > point.y1y ? '0' : '180' ) + ')';
@@ -320,7 +318,7 @@ IaChart.prototype = {
 
 		if (this.diffDot !== null) {
 			this.diffDot.select('circle')
-				.attr('stroke', pointColor)
+				.attr('fill', pointColor)
 				.attr('opacity', 1)
 				.attr('transform', this.translateStr(this.x(point.x), pointY));
 		}
