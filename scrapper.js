@@ -10,21 +10,28 @@ var Scrapper = {
 
 	fileId: null,
 	options: {
+		check: false,    // checks for file in server
 		download: false, // forces download
 		verbose: false
 	},
 
 	init: function (fileId, cliOptions) {
+		var options = {};
+
 		this.fileId = fileId || this.getDefaultFileId();
 
 		if ( cliOptions ) {
-			var options = this.options;
+			options = this.options;
 			cliOptions.split(',').forEach(function (cliOpt) {
 				if ( options.hasOwnProperty(cliOpt) ) {
 					options[cliOpt] = true;
 				}
 			});
 		}
+
+		( options.check )
+			? this.check()
+			: this.process();
 	},
 
 	getDefaultFileId: function () {
@@ -40,41 +47,49 @@ var Scrapper = {
 		return './files/' + ext + '/' + this.fileId + '.' + ext;
 	},
 
-	getDownloadLink: function () {
+	getDownloadHostname: function () {
+		return 'www.sepe.es';
+	},
+
+	getDownloadPath: function () {
 		var year = this.fileId.split('-')[0],
-			baseUrl = 'http://www.sepe.es/contenidos/que_es_el_sepe/estadisticas/datos_avance/datos/',
+			basePath = '/contenidos/que_es_el_sepe/estadisticas/datos_avance/datos/',
 			fileName = this.fileId.replace('-', ''),
-			downloadLink;
+			downloadPath;
 
 		if ( this.fileId >= '06-08' || this.fileId === '06-04' || this.fileId === '06-03') {
-			downloadLink = baseUrl + 'datos_20' + year + '/Av_sispe_' + fileName + '.xls';
+			downloadPath = basePath + 'datos_20' + year + '/Av_sispe_' + fileName + '.xls';
 		}
 		else if ( this.fileId === '06-07' || this.fileId === '06-06' || this.fileId === '06-05' ) {
-			downloadLink = baseUrl + 'datos_20' + year + '/Av_SISPE_' + fileName + '.xls';
+			downloadPath = basePath + 'datos_20' + year + '/Av_SISPE_' + fileName + '.xls';
 		}
 		else if ( this.fileId === '06-02' || this.fileId === '06-01' || this.fileId === '05-12' || this.fileId === '05-10' ) {
-			downloadLink = baseUrl + 'datos_20' + year + '/AV_SISPE_' + fileName + '.xls';
+			downloadPath = basePath + 'datos_20' + year + '/AV_SISPE_' + fileName + '.xls';
 		}
 		else if ( this.fileId === '05-11' ) {
-			downloadLink = baseUrl + 'datos_20' + year + '/av_sispe_' + fileName + '.xls';
+			downloadPath = basePath + 'datos_20' + year + '/av_sispe_' + fileName + '.xls';
 		}
 		else if ( this.fileId === '05-09' ) {
-			downloadLink = baseUrl + 'datos_2005/DBPRCT_nov.xls';
+			downloadPath = basePath + 'datos_2005/DBPRCT_nov.xls';
 		}
 		else if ( this.fileId === '05-08' ) {
-			downloadLink = baseUrl + 'datos_jun_jul_ma/dbprct.xls';
+			downloadPath = basePath + 'datos_jun_jul_ma/dbprct.xls';
 		}
 		else if ( this.fileId === '05-07' ) {
-			downloadLink = baseUrl + 'datos_jun_jul_ma/Avance_2005_SISPE_JULIO.xls';
+			downloadPath = basePath + 'datos_jun_jul_ma/Avance_2005_SISPE_JULIO.xls';
 		}
 		else if ( this.fileId === '05-06' ) {
-			downloadLink = baseUrl + 'datos_jun_jul_ma/Avance_2005_SISPE_JUNIO.xls';
+			downloadPath = basePath + 'datos_jun_jul_ma/Avance_2005_SISPE_JUNIO.xls';
 		}
 		else if ( this.fileId === '05-05' ) {
-			downloadLink = baseUrl + 'datos_jun_jul_ma/Avance_2005_SISPE_MAYO.xls';
+			downloadPath = basePath + 'datos_jun_jul_ma/Avance_2005_SISPE_MAYO.xls';
 		}
 
-		return downloadLink;
+		return downloadPath;
+	},
+
+	getDownloadLink: function () {
+		return 'http://' + this.getDownloadHostname() + this.getDownloadPath();
 	},
 
 	getSheetMapping: function () {
@@ -194,6 +209,10 @@ var Scrapper = {
 		return data;
 	},
 
+	isXlsFile: function (contentType) {
+		return contentType === 'application/vnd.ms-excel' || contentType === 'application/vnd.ms-office';
+	},
+
 	log: function (message, type) {
 		var badge;
 		switch (type) {
@@ -218,13 +237,19 @@ var Scrapper = {
 
 		var file = fs.createWriteStream(dest);
 		var request = http.get(url, function(response) {
-			response.pipe(file);
-			file.on('finish', function() {
-				scrapper.log('File saved: ' + dest, 'success');
-				file.close(cb);  // close() is async, call cb after close completes.
-			});
+			var contentType = response.headers['content-type'];
+			if ( scrapper.isXlsFile(contentType) ) {
+				response.pipe(file);
+				file.on('finish', function() {
+					scrapper.log('File saved: ' + dest, 'success');
+					file.close(cb);  // close() is async, call cb after close completes.
+				});
+			}
+			else {
+				this.emit('error', new Error('Invalid content-type (' + contentType + ')'));
+			}
 		}).on('error', function(err) { // Handle errors
-			scrapper.log('Error downloading file, exiting', 'error');
+			scrapper.log('Error downloading file: ' + err.message +'.', 'error');
 			fs.unlink(dest); // Delete the file async. (But we don't check the result)
 			process.exit(1);
 		});
@@ -263,9 +288,36 @@ var Scrapper = {
 		else {
 			this.scrapAndSave();
 		}
+	},
+
+	check: function () {
+		var scrapper = this,
+			logPrepend = (new Date()).toLocaleString() + ' [ ' + this.fileId + ' ]: ',
+			options = {
+				method: 'HEAD',
+				host: xthis.getDownloadHostname(),
+				path: this.getDownloadPath(),
+				port: 80
+			};
+
+		if ( fs.existsSync(this.getFilePath()) ) {
+			scrapper.log(logPrepend + 'File already downloaded.');
+			process.exit(0);
+		}
+
+		var req = http.request(options, function(res) {
+			if ( scrapper.isXlsFile(res.headers['content-type']) ) {
+				scrapper.log(logPrepend + 'File found!', 'success');
+				scrapper.process();
+			}
+			else {
+				scrapper.log(logPrepend + 'File not available in the server.');
+				process.exit(0);
+			}
+		});
+		req.end();
 	}
 
 };
 
 Scrapper.init(process.argv[2], process.argv[3]);
-Scrapper.process();
