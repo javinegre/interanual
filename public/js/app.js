@@ -108,7 +108,7 @@ var ianual = {
 		_.each(regionalMetrics, setActiveMetric);
 
 		$('#metric-selector').find('.general-selector').html( this.tpls.metricList({ metrics: generalMetrics }) );
-		$('#metric-selector').find('.reginal-selector').html( this.tpls.metricList({ metrics: regionalMetrics }) );
+		$('#metric-selector').find('.regional-selector').html( this.tpls.metricList({ metrics: regionalMetrics }) );
 	},
 
 	updateInfoBox: function (data) {
