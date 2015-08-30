@@ -29,7 +29,10 @@ _.mixin({
 		}
 		return s.join(dec);
 	},
-	numberSign: function (number) {
+	getNumberSign: function (number) {
 		return (number > 0) ? '+' : '';
+	},
+	numberSigned: function (number) {
+		return _.getNumberSign(number) + _.numberFormat(number);
 	}
 });
