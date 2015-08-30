@@ -3,7 +3,53 @@
 	float: right;
 }
 
-#info-box {
+.info-block {
 	width: 25%;
 	float: left;
+
+	&-box {
+		float: left;
+		width: 50%;
+		padding: 15px 0 15px;
+		text-align: center;
+
+		.title {
+			margin-bottom: 0.4em;
+			font-weight: 300;
+		}
+
+		&-current {
+
+			.title {
+				color: #808080;
+				font-size: 1.2em;
+			}
+
+			.val {
+				font-size: 1.4em;
+				padding: 0.4em 0 0 0;
+			}
+		}
+
+		&-prev-month,
+		&-prev-year {
+			.title {
+				color: #b0b0b0;
+			}
+
+			.val {
+				font-size: 1em;
+				color: #b0b0b0;
+				font-weight: 300;
+			}
+
+			.diff {
+				font-size: 1.2em;
+				color: #404040;
+				padding: 0.2em 0 0.4em;
+			}
+		}
+	}
+
+
 }

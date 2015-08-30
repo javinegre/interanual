@@ -5,12 +5,19 @@
     </head>
 
     <body>
-        <h1>
-            <div class="l1">Inter</div>
-            <div class="l2">anual</div>
-        </h1>
 
-        <div id="info-box"></div>
+        <div id="info-block" class="info-block">
+
+            <h1 class="info-block-box">
+                <div class="l1">Inter</div>
+                <div class="l2">anual</div>
+            </h1>
+
+            <div class="info-block-box info-block-box-prev-year"></div>
+            <div class="info-block-box info-block-box-prev-month"></div>
+            <div class="info-block-box info-block-box-current"></div>
+
+        </div>
 
         <div id="chart-wrapper"></div>
 
@@ -32,27 +39,15 @@
     </script>
 
     <script type="text/template" id="info-box-tpl">
-        <div class="current">
-            <h3><%= currentDate %></h3>
-            <div class="value"><%= currentTotal %></div>
-        </div>
-        <div class="previous">
-            <h3><%= prevYearDate %></h3>
-            <% if ( prevYear ) { %>
-                <div class="value"><%= prevYearTotal %></div>
-                <div class="value"><%= interannualValue %></div>
-            <% } else { %>
-                Sin Datos
+        <div class="title"><%= title %></div>
+        <% if ( val !== null ) { %>
+            <% if ( diff !== null ) { %>
+                <div class="diff font-ms"><%= diff %></div>
             <% } %>
-        </div>
-        <div class="interannualDiff">
-            <h3>IA Diff</h3>
-            <% if ( interannualDiff ) { %>
-                <div class="value"><%= interannualDiffValue %></div>
-            <% } else { %>
-                Sin Datos
-            <% } %>
-        </div>
+            <div class="val font-ms"><%= val %></div>
+        <% } else { %>
+            <div class="no-data">Sin datos</div>
+        <% } %>
     </script>
 
     <script type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>

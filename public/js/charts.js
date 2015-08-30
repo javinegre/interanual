@@ -32,6 +32,7 @@ var IaChart = function ( options ) {
 	this.serie1y = null;
 	this.diffDot = null;
 	this.hoverable = null;
+	this.activeIdx = null;
 
 	this.init(options);
 }
@@ -110,12 +111,13 @@ IaChart.prototype = {
 			dataByPeriod[this.csvData[i].periodo] = this.csvData[i];
 		}
 
-		this.csvData.forEach(function (d) {
-			_this.keys.forEach(function (keyName, i) {
+		this.csvData.forEach(function (d, i) {
+			_this.keys.forEach(function (keyName, j) {
 				prevYear = ianual.prevYearId(d.periodo);
-				_this.series[i].values.push({
+				_this.series[j].values.push({
 					x: +d.ts,
 					y: +d[keyName],
+					y1m: _this.csvData[i-1] ? +_this.csvData[i-1][keyName] : null,
 					y1y: dataByPeriod[prevYear] ? +dataByPeriod[prevYear][keyName] : null
 				});
 			});
@@ -294,11 +296,10 @@ IaChart.prototype = {
 			pointColor = this.getDiffColor(point.y, point.y1y),
 			pointY = point.y1y === null ? this.y(point.y) : this.y(point.y1y);
 
-		point.y1y1m = this.series[0].values[mIdx-1] && this.series[0].values[mIdx-1].y1y
-			? this.series[0].values[mIdx-1].y1y
-			: null;
-
-		this.options.cb(point);
+		if ( this.activeIdx !== mIdx ) {
+			this.activeIdx = mIdx;
+			this.options.cb(point);
+		}
 
 		this.serie.selectAll('.serie-dot')
 			.attr('opacity', 1)

@@ -1,53 +1,53 @@
 
 var generalMetrics = [
-	{ key: 'total', title: 'Total' },
-	{ key: 'hombres', title: 'Tombres' },
-	{ key: 'mujeres', title: 'Mujeres' },
+	{ key: 'total',          title: 'Total' },
+	{ key: 'hombres',        title: 'Tombres' },
+	{ key: 'mujeres',        title: 'Mujeres' },
 	{ key: 'hombresMenor25', title: 'Hombres menores 25' },
 	{ key: 'mujeresMenor25', title: 'Mujeres menores 25' },
-	{ key: 'totalMenor25', title: 'Total menores 25' },
+	{ key: 'totalMenor25',   title: 'Total menores 25' },
 	{ key: 'hombresMayor25', title: 'Hombres mayores 25' },
 	{ key: 'mujeresMayor25', title: 'Mujeres mayores 25' },
-	{ key: 'totalMayor25', title: 'Total mayores 25' },
-	{ key: 'agricultura', title: 'Agricultura' },
-	{ key: 'industria', title: 'Industria' },
-	{ key: 'construccion', title: 'Construcción' },
-	{ key: 'servicios', title: 'Servicios' },
-	{ key: 'sinEmpleo', title: 'Sin empleo' },
+	{ key: 'totalMayor25',   title: 'Total mayores 25' },
+	{ key: 'agricultura',    title: 'Agricultura' },
+	{ key: 'industria',      title: 'Industria' },
+	{ key: 'construccion',   title: 'Construcción' },
+	{ key: 'servicios',      title: 'Servicios' },
+	{ key: 'sinEmpleo',      title: 'Sin empleo' },
 ];
 
 var regionalMetrics = [
-	{ key: 'andalucia', title: 'Andalucía' },
-	{ key: 'aragon', title: 'Aragón' },
-	{ key: 'asturias', title: 'Asturias' },
-	{ key: 'balears', title: 'Illes Balears' },
-	{ key: 'canarias', title: 'Islas Canarias' },
-	{ key: 'cantabria', title: 'Cantabria' },
+	{ key: 'andalucia',      title: 'Andalucía' },
+	{ key: 'aragon',         title: 'Aragón' },
+	{ key: 'asturias',       title: 'Asturias' },
+	{ key: 'balears',        title: 'Illes Balears' },
+	{ key: 'canarias',       title: 'Islas Canarias' },
+	{ key: 'cantabria',      title: 'Cantabria' },
 	{ key: 'castillaMancha', title: 'Castilla-La Mancha' },
-	{ key: 'castillaLeon', title: 'Castilla y León' },
-	{ key: 'catalunya', title: 'Catalunya' },
-	{ key: 'comValenciana', title: 'Com. Valenciana' },
-	{ key: 'extremadura', title: 'Extremadura' },
-	{ key: 'galicia', title: 'Galicia' },
-	{ key: 'madrid', title: 'Madrid' },
-	{ key: 'murcia', title: 'Murcia' },
-	{ key: 'navarra', title: 'Navarra' },
-	{ key: 'paisVasco', title: 'Euskadi' },
-	{ key: 'rioja', title: 'La Rioja' },
-	{ key: 'ceuta', title: 'Ceuta' },
-	{ key: 'melilla', title: 'Melilla' },
+	{ key: 'castillaLeon',   title: 'Castilla y León' },
+	{ key: 'catalunya',      title: 'Catalunya' },
+	{ key: 'comValenciana',  title: 'Com. Valenciana' },
+	{ key: 'extremadura',    title: 'Extremadura' },
+	{ key: 'galicia',        title: 'Galicia' },
+	{ key: 'madrid',         title: 'Madrid' },
+	{ key: 'murcia',         title: 'Murcia' },
+	{ key: 'navarra',        title: 'Navarra' },
+	{ key: 'paisVasco',      title: 'Euskadi' },
+	{ key: 'rioja',          title: 'La Rioja' },
+	{ key: 'ceuta',          title: 'Ceuta' },
+	{ key: 'melilla',        title: 'Melilla' },
 ];
 
 var ianual = {
 
-	$infoBox: null,
+	$infoBlock: null,
 
 	init: function () {
 
 		this.activeMetrics = ['total'];
 		this.chartMode = 'interannual';
 
-		this.$infoBox = $('#info-box');
+		this.$infoBlock = $('#info-block');
 
 		this.tpls = {
 			infoBox: _.template( $('#info-box-tpl').html() ),
@@ -113,28 +113,35 @@ var ianual = {
 
 	updateInfoBox: function (data) {
 
-		var infoBoxData = {
+		var infoBlockData = {
 				currentDate: moment(data.x).format('YYYY-MMM'),
 				currentTotal: _.numberFormat(data.y),
 				prevYearDate: moment(data.x).subtract(1, 'year').format('YYYY-MMM'),
 				prevYear: false,
-				interannualDiff: false
-			},
-			interannualDiff;
-
+			};
 
 		if ( data.y1y ) {
-			infoBoxData.prevYear = true;
-			infoBoxData.prevYearTotal = _.numberFormat(data.y1y);
-			interannualDiff = data.y - data.y1y;
-			infoBoxData.interannualValue = _.numberSign(interannualDiff) + _.numberFormat(interannualDiff);
+			infoBlockData.prevYear = true;
+			infoBlockData.prevYearTotal = _.numberFormat(data.y1y);
+			infoBlockData.interannualValue = _.numberSigned(data.y - data.y1y);
 		}
 
-		if ( data.y1y1m ) {
-			infoBoxData.interannualDiff = true;
-			infoBoxData.interannualDiffValue = _.numberFormat(data.y1y - data.y1y1m);
-		}
+		ianual.$infoBlock.find('.info-block-box-current').html(ianual.tpls.infoBox({
+			title: moment(data.x).format('MMM \'YY'),
+			val: _.numberFormat(data.y),
+			diff: null
+		}));
 
-		ianual.$infoBox.html(ianual.tpls.infoBox(infoBoxData));
+		ianual.$infoBlock.find('.info-block-box-prev-month').html(ianual.tpls.infoBox({
+			title: moment(data.x).subtract(1, 'month').format('MMM \'YY'),
+			val: _.numberFormat(data.y1m),
+			diff: ( _.numberFormat(data.y1m) !== null ) ? _.numberSigned(data.y - data.y1m) : null
+		}));
+
+		ianual.$infoBlock.find('.info-block-box-prev-year').html(ianual.tpls.infoBox({
+			title: moment(data.x).subtract(1, 'year').format('MMM \'YY'),
+			val: _.numberFormat(data.y1y),
+			diff: ( _.numberFormat(data.y1y) !== null ) ? _.numberSigned(data.y - data.y1y) : null
+		}));
 	}
 };
