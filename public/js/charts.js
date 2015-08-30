@@ -9,7 +9,8 @@ var IaChart = function ( options ) {
 	this.csvData = null;
 
 	this.defaults = {
-		keys: ['total']
+		keys: ['total'],
+		onLoad: function () {}
 	};
 	this.options = options;
 
@@ -286,6 +287,10 @@ IaChart.prototype = {
 			.attr('transform', this.translateStr(0, -10))
 			.on('mousemove', function () { _this.chartMouseMove.call( _this, d3.mouse(this) ); })
 			.on('mouseout', function () { _this.chartMouseOut.call( _this ); });
+
+		var serieColors = {};
+		this.keys.forEach(function (d) { serieColors[d] = _this.keysLen === 1 ? '#808080' : _this.color(d); });
+		this.options.onLoad({ colors: serieColors });
 	},
 
 	chartMouseMove: function (m) {

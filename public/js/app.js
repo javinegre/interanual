@@ -48,6 +48,7 @@ var ianual = {
 		this.chartMode = 'interannual';
 
 		this.$infoBlock = $('#info-block');
+		this.$metricSelector = $('#metric-selector');
 
 		this.tpls = {
 			infoBox: _.template( $('#info-box-tpl').html() ),
@@ -55,10 +56,11 @@ var ianual = {
 		};
 
 		this.chart = new IaChart({
+			onLoad: this.onChartLoad,
 			cb: this.updateInfoBox
 		});
 
-		$('#metric-selector').delegate('li.toggle', 'click', function () {
+		this.$metricSelector.delegate('li.toggle', 'click', function () {
 			var key = $(this).data('key');
 
 			if ( ianual.chartMode === 'interannual' ) {
@@ -80,8 +82,6 @@ var ianual = {
 		$('[name="chart-mode"]').on('change', function () {
 			ianual.chartMode = $(this).val();
 		});
-
-		this.updateMetricSelector();
 	},
 
 	prevYearId: function ( id ) {
@@ -93,22 +93,27 @@ var ianual = {
 
 	updateView: function () {
 		this.chart.update({
+			onLoad: this.onChartLoad,
 			keys: this.activeMetrics
 		});
-		this.updateMetricSelector();
 	},
 
-	updateMetricSelector: function () {
+	onChartLoad: function (data) {
+		ianual.updateMetricSelector(data);
+	},
 
-		var setActiveMetric = function (m) {
+	updateMetricSelector: function (data) {
+
+		var setMetricStyle = function (m) {
 			m.active = ianual.activeMetrics.indexOf(m.key) >= 0;
+			m.color = _.has(data.colors, m.key) ? data.colors[m.key] : null;
 		};
 
-		_.each(generalMetrics, setActiveMetric);
-		_.each(regionalMetrics, setActiveMetric);
+		_.each(generalMetrics, setMetricStyle);
+		_.each(regionalMetrics, setMetricStyle);
 
-		$('#metric-selector').find('.general-selector').html( this.tpls.metricList({ metrics: generalMetrics }) );
-		$('#metric-selector').find('.regional-selector').html( this.tpls.metricList({ metrics: regionalMetrics }) );
+		this.$metricSelector.find('.general-selector').html( this.tpls.metricList({ metrics: generalMetrics }) );
+		this.$metricSelector.find('.regional-selector').html( this.tpls.metricList({ metrics: regionalMetrics }) );
 	},
 
 	updateInfoBox: function (data) {

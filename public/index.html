@@ -34,7 +34,9 @@
 
     <script type="text/template" id="metric-list-tpl">
         <% _.each(metrics, function (m) { %>
-            <li class="toggle <%= (m.active) ? 'active' : '' %>" data-key="<%= m.key %>"><%= m.title %></li>
+            <li class="toggle <%= (m.active) ? 'active' : '' %>" data-key="<%= m.key %>" <%= (m.color !== null) ? 'style="border-bottom-color: ' + m.color + ';"' : '' %>>
+                <%= m.title %>
+            </li>
         <% }); %>
     </script>
 
