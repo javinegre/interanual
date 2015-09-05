@@ -301,9 +301,17 @@ IaChart.prototype = {
 			pointColor = this.getDiffColor(point.y, point.y1y),
 			pointY = point.y1y === null ? this.y(point.y) : this.y(point.y1y);
 
+		var tableData = [];
+		for ( var i = mIdx % 12 ; i < this.numPoints ; i += 12 ) {
+			tableData.push( this.series[0].values[i] );
+		}
+
 		if ( this.activeIdx !== mIdx ) {
 			this.activeIdx = mIdx;
-			this.options.cb(point);
+			this.options.cb({
+				point: point,
+				table: tableData
+			});
 		}
 
 		this.serie.selectAll('.serie-dot')

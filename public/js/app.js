@@ -41,6 +41,7 @@ var regionalMetrics = [
 var ianual = {
 
 	$infoBlock: null,
+	$infoTable: null,
 
 	init: function () {
 
@@ -48,16 +49,18 @@ var ianual = {
 		this.chartMode = 'interannual';
 
 		this.$infoBlock = $('#info-block');
+		this.$infoTable = $('#info-table');
 		this.$metricSelector = $('#metric-selector');
 
 		this.tpls = {
 			infoBox: _.template( $('#info-box-tpl').html() ),
+			infoTableRow: _.template( $('#info-table-row-tpl').html() ),
 			metricList: _.template( $('#metric-list-tpl').html() )
 		};
 
 		this.chart = new IaChart({
 			onLoad: this.onChartLoad,
-			cb: this.updateInfoBox
+			cb: $.proxy(this.udpateInfo, this)
 		});
 
 		this.$metricSelector.delegate('li.toggle', 'click', function () {
@@ -116,6 +119,11 @@ var ianual = {
 		this.$metricSelector.find('.regional-selector').html( this.tpls.metricList({ metrics: regionalMetrics }) );
 	},
 
+	udpateInfo: function (data) {
+		this.updateInfoBox(data.point);
+		this.updateInfoTable(data.table, moment(data.point.x).format('YYYY'));
+	},
+
 	updateInfoBox: function (data) {
 
 		var infoBlockData = {
@@ -148,5 +156,41 @@ var ianual = {
 			val: _.numberFormat(data.y1y),
 			diff: ( _.numberFormat(data.y1y) !== null ) ? _.numberSigned(data.y - data.y1y) : null
 		}));
+	},
+
+	padInfoTable: function (table) {
+		var iniYear = moment({ y: 2005 }),
+			now = moment();
+
+		if ( ! moment( _.first(table).x ).isSame(now, 'year') ) {
+			table.unshift({ x: now, y: null, y1m: null, y1y: null });
+		}
+		if ( ! moment( _.last(table).x ).isSame(iniYear, 'year') ) {
+			table.push({ x: iniYear, y: null, y1m: null, y1y: null });
+		}
+
+		return table;
+	},
+
+	updateInfoTable: function (data, activeYear) {
+		data = this.padInfoTable( data.reverse() );
+		this.$infoTable.html(
+			data.map(function (d, i) {
+				var monthlyDiff = d.y1m !== null ? d.y - d.y1m : null,
+					yearlyDiff = d.y1y !== null ? d.y - d.y1y : null;
+
+				return ianual.tpls.infoTableRow({
+					isActive: (activeYear == moment(d.x).format('YYYY')) ? 'active' : '',
+					isEmpty: d.y === null ? 'empty' : '',
+					label: moment(d.x).format('YYYY'),
+					total: d.y !== null ? _.numberFormat(d.y) : '-',
+					monhtlyDiff: monthlyDiff !== null ? _.numberSigned(monthlyDiff) : '-',
+					monhtlyTrend: monthlyDiff < 0 ? 'trend-pos' : ( (monthlyDiff > 0) ? 'trend-neg' : '' ),
+					yearlyDiff: yearlyDiff !== null ? _.numberSigned(yearlyDiff) : '-',
+					yearlyTrend: yearlyDiff < 0 ? 'trend-pos' : ( (yearlyDiff > 0) ? 'trend-neg' : '' )
+				});
+			})
+		);
+		this.$infoTable.prepend( $('<li>').attr('class', 'info-table-header').text(moment(data[0].x).format('MMMM')) );
 	}
 };

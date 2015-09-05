@@ -1,0 +1,82 @@
+#into-table {
+}
+
+.info-table {
+
+	&-header {
+		margin: 0 0.4em;
+		padding: 0.4em 0.6em 0.6em;
+	}
+
+	&-row {
+		line-height: 1em;
+		margin: 0 0.4em;
+		padding: 0 0.6em;
+		border-radius: 4px;
+
+		&.active {
+			background-color: #e8e8e8;
+
+			.info-table-label {
+				font-weight: 700;
+			}
+		}
+		&.empty {
+			color: #d0d0d0;
+		}
+	}
+
+	&-cell {
+		display: inline-block;
+	}
+
+	&-label {
+		width: 12%;
+		font-size: 0.75em;
+		font-weight: 600;
+	}
+
+	&-total {
+		text-align: right;
+		width: 24%;
+		font-size: 0.8em;
+	}
+
+	&-monhtly-diff {
+		text-align: right;
+		width: 27%;
+		font-size: 0.8em;
+	}
+
+	&-yearly-diff {
+		text-align: right;
+		width: 33%;
+		font-size: 0.9em;
+	}
+
+	&-monhtly-diff,
+	&-yearly-diff {
+		&::after {
+			position: relative;
+			display: inline-block;
+			font-size: 0.6em;
+			content: '●';
+			margin-left: 2px;
+		}
+		&.trend-pos::after {
+			top: -2px;
+			content: '▲';
+			color: $colorGreen;
+			-webkit-transform: rotate(180deg);
+			-moz-transform: rotate(180deg);
+			-ms-transform: rotate(180deg);
+			transform: rotate(180deg);
+		}
+		&.trend-neg::after {
+			top: -2px;
+			content: '▲';
+			color: $colorRed;
+		}
+	}
+
+}

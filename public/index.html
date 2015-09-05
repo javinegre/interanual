@@ -6,31 +6,35 @@
 
     <body>
 
-        <div id="info-block" class="info-block">
+        <div class="info-col">
+            <div id="info-block" class="info-block">
 
-            <h1 class="info-block-box">
-                <div class="l1">Inter</div>
-                <div class="l2">anual</div>
-            </h1>
+                <h1 class="info-block-box">
+                    <div class="l1">Inter</div>
+                    <div class="l2">anual</div>
+                </h1>
 
-            <div class="info-block-box info-block-box-prev-year"></div>
-            <div class="info-block-box info-block-box-prev-month"></div>
-            <div class="info-block-box info-block-box-current"></div>
+                <div class="info-block-box info-block-box-prev-year"></div>
+                <div class="info-block-box info-block-box-prev-month"></div>
+                <div class="info-block-box info-block-box-current"></div>
 
+            </div>
+
+            <div id="mode-selector">
+                <div class="radio-selector">
+                    <input type="radio" name="chart-mode" value="interannual" id="chart-mode-interanual" />
+                    <label for="chart-mode-interanual">interannual</label>
+                </div>
+                <div class="radio-selector">
+                    <input type="radio" name="chart-mode" value="comparative" id="chart-mode-comparative" />
+                    <label for="chart-mode-comparative">comparative</label>
+                </div>
+            </div>
+
+            <ul id="info-table"></ul>
         </div>
 
         <div id="chart-wrapper"></div>
-
-        <div id="mode-selector">
-            <div class="radio-selector">
-                <input type="radio" name="chart-mode" value="interannual" id="chart-mode-interanual" />
-                <label for="chart-mode-interanual">interannual</label>
-            </div>
-            <div class="radio-selector">
-                <input type="radio" name="chart-mode" value="comparative" id="chart-mode-comparative" />
-                <label for="chart-mode-comparative">comparative</label>
-            </div>
-        </div>
 
         <div id="metric-selector">
             <ul class="general-selector"></ul>
@@ -44,6 +48,15 @@
                 <%= m.title %>
             </li>
         <% }); %>
+    </script>
+
+    <script type="text/template" id="info-table-row-tpl">
+        <li class="info-table-row <%= isActive %> <%= isEmpty %>">
+            <span class="info-table-cell info-table-label"><%= label %></span>
+            <span class="info-table-cell info-table-total font-ms"><%= total %></span>
+            <span class="info-table-cell info-table-monhtly-diff <%= monhtlyTrend %> font-ms"><%= monhtlyDiff %></span>
+            <span class="info-table-cell info-table-yearly-diff <%= yearlyTrend %> font-ms"><%= yearlyDiff %></span>
+        </li>
     </script>
 
     <script type="text/template" id="info-box-tpl">
