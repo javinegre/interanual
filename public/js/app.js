@@ -1,7 +1,7 @@
 
 var generalMetrics = [
 	{ key: 'total',          title: 'Total' },
-	{ key: 'hombres',        title: 'Tombres' },
+	{ key: 'hombres',        title: 'Hombres' },
 	{ key: 'mujeres',        title: 'Mujeres' },
 	{ key: 'hombresMenor25', title: 'Hombres menores 25' },
 	{ key: 'mujeresMenor25', title: 'Mujeres menores 25' },
