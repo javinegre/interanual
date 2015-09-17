@@ -61,8 +61,8 @@ var ianual = {
 		// Events
 		$('[name="chart-mode"]').on('change', this.toggleChartMode);
 		this.$metricSelector.delegate('li.toggle', 'click', this.toggleMetricSelector);
+		$(document).on('keydown', this.keyboardControl);
 	},
-
 
 	initChart: function () {
 		this.chart = new IaChart({
@@ -124,6 +124,15 @@ var ianual = {
 		}
 
 		ianual.updateView();
+	},
+
+	keyboardControl: function (e) {
+		if ( $('input').filter(':focus').length ) {
+			return;
+		}
+		if ( e.keyCode === 37 || e.keyCode === 39 ) {
+			ianual.chart.shiftIndex( e.keyCode === 39 ? 'up' : 'down' );
+		}
 	},
 
 	udpateInfo: function (data) {
