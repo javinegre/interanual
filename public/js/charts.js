@@ -43,7 +43,7 @@ IaChart.prototype = {
 	init: function () {
 		var _this = this;
 
-		this.options = this.deepExtend(this.defaults, this.options);
+		this.options = this.extend(this.defaults, this.options);
 
 		d3.csv('data/interanual.csv', function (csvData) {
 			_this.csvData = csvData.reverse();
@@ -362,7 +362,7 @@ IaChart.prototype = {
 	},
 
 	update: function (options) {
-		this.options = this.deepExtend(this.options, options);
+		this.options = this.extend(this.options, options);
 		this.emptyChart();
 		this.calculate();
 		this.buildSvg();
@@ -392,23 +392,17 @@ IaChart.prototype = {
 		return 'translate(' + [x, y].join(',') + ')';
 	},
 
-	deepExtend: function(out) {
-		// http://youmightnotneedjquery.com/#deep_extend
+	extend: function(out) {
+		// http://youmightnotneedjquery.com/#extend
 		out = out || {};
 
 		for (var i = 1; i < arguments.length; i++) {
-			var obj = arguments[i];
-
-			if (!obj)
+			if (!arguments[i])
 				continue;
 
-			for (var key in obj) {
-				if (obj.hasOwnProperty(key)) {
-					if (typeof obj[key] === 'object')
-						this.deepExtend(out[key], obj[key]);
-					else
-						out[key] = obj[key];
-				}
+			for (var key in arguments[i]) {
+				if (arguments[i].hasOwnProperty(key))
+					out[key] = arguments[i][key];
 			}
 		}
 
