@@ -58,32 +58,18 @@ var ianual = {
 			metricList: _.template( $('#metric-list-tpl').html() )
 		};
 
+		this.initChart();
+
+		// Events
+		$('[name="chart-mode"]').on('change', this.toggleChartMode);
+		this.$metricSelector.delegate('li.toggle', 'click', this.toggleMetricSelector);
+	},
+
+
+	initChart: function () {
 		this.chart = new IaChart({
 			onLoad: this.onChartLoad,
 			cb: $.proxy(this.udpateInfo, this)
-		});
-
-		this.$metricSelector.delegate('li.toggle', 'click', function () {
-			var key = $(this).data('key');
-
-			if ( ianual.chartMode === 'interannual' ) {
-				ianual.activeMetrics = [ key ];
-			}
-			else { // ianual.chartMode === 'comparative'
-				var idx = ianual.activeMetrics.indexOf(key);
-				if ( idx < 0 ) {
-					ianual.activeMetrics.push(key);
-				}
-				else if ( ianual.activeMetrics.length > 1 ) {
-					ianual.activeMetrics.splice(idx, 1);
-				}
-			}
-
-			ianual.updateView();
-		});
-
-		$('[name="chart-mode"]').on('change', function () {
-			ianual.chartMode = $(this).val();
 		});
 	},
 
@@ -117,6 +103,29 @@ var ianual = {
 
 		this.$metricSelector.find('.general-selector').html( this.tpls.metricList({ metrics: generalMetrics }) );
 		this.$metricSelector.find('.regional-selector').html( this.tpls.metricList({ metrics: regionalMetrics }) );
+	},
+
+	toggleChartMode: function () {
+		ianual.chartMode = $(this).val();
+	},
+
+	toggleMetricSelector: function () {
+		var key = $(this).data('key');
+
+		if ( ianual.chartMode === 'interannual' ) {
+			ianual.activeMetrics = [ key ];
+		}
+		else { // ianual.chartMode === 'comparative'
+			var idx = ianual.activeMetrics.indexOf(key);
+			if ( idx < 0 ) {
+				ianual.activeMetrics.push(key);
+			}
+			else if ( ianual.activeMetrics.length > 1 ) {
+				ianual.activeMetrics.splice(idx, 1);
+			}
+		}
+
+		ianual.updateView();
 	},
 
 	udpateInfo: function (data) {
