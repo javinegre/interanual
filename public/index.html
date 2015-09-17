@@ -14,6 +14,13 @@
                 </h1>
             </div>
 
+            <ul id="info-table"></ul>
+        </div>
+
+        <div id="chart-wrapper"></div>
+
+        <div class="chart-options">
+
             <div id="mode-selector">
                 <div class="radio-selector">
                     <input type="radio" name="chart-mode" value="interannual" id="chart-mode-interanual" checked />
@@ -25,15 +32,13 @@
                 </div>
             </div>
 
-            <ul id="info-table"></ul>
+            <div id="metric-selector">
+                <ul class="general-selector"></ul>
+                <ul class="regional-selector"></ul>
+            </div>
+
         </div>
 
-        <div id="chart-wrapper"></div>
-
-        <div id="metric-selector">
-            <ul class="general-selector"></ul>
-            <ul class="regional-selector"></ul>
-        </div>
     </body>
 
     <script type="text/template" id="metric-list-tpl">
