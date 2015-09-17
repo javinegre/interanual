@@ -142,6 +142,8 @@ IaChart.prototype = {
 		this.numPoints = this.series[0].values.length;
 		this.pointWidth = this.width / (this.numPoints - 1);
 
+		this.activeIdx = this.activeIdx || (this.numPoints - 1);
+
 		this.x.domain(d3.extent(this.series[0].values, function (d) {
 			return d.x;
 		}));
@@ -290,12 +292,34 @@ IaChart.prototype = {
 
 		var serieColors = {};
 		this.keys.forEach(function (d) { serieColors[d] = _this.keysLen === 1 ? '#808080' : _this.color(d); });
+
+		this.highlightPoint(this.activeIdx);
 		this.options.onLoad({ colors: serieColors });
 	},
 
 	chartMouseMove: function (m) {
-		var _this = this,
-			mIdx = Math.floor((m[0] + this.pointWidth / 2) / this.pointWidth);
+		var mIdx = Math.floor((m[0] + this.pointWidth / 2) / this.pointWidth);
+
+		if ( this.activeIdx !== mIdx ) {
+			this.activeIdx = mIdx;
+			this.highlightPoint(mIdx);
+		}
+	},
+
+	chartMouseOut: function () {
+		this.serie.selectAll('.serie-dot').attr('opacity', 0);
+		this.serie.selectAll('.serie-arrow').attr('opacity', 0);
+		this.guideLine.attr('opacity', 0);
+		if (this.diffDot !== null) {
+			this.diffDot.select('circle').attr('opacity', 0);
+		}
+		if (this.diffLines !== null) {
+			this.diffLines.selectAll('line').classed('active', false);
+		}
+	},
+
+	highlightPoint: function (mIdx) {
+		var _this = this;
 
 		var point = this.series[0].values[mIdx],
 			pointColor = this.getDiffColor(point.y, point.y1y),
@@ -306,13 +330,10 @@ IaChart.prototype = {
 			tableData.push( this.series[0].values[i] );
 		}
 
-		if ( this.activeIdx !== mIdx ) {
-			this.activeIdx = mIdx;
-			this.options.cb({
-				point: point,
-				table: tableData
-			});
-		}
+		this.options.cb({
+			point: point,
+			table: tableData
+		});
 
 		this.serie.selectAll('.serie-dot')
 			.attr('opacity', 1)
@@ -343,18 +364,6 @@ IaChart.prototype = {
 		}
 	},
 
-	chartMouseOut: function () {
-		this.serie.selectAll('.serie-dot').attr('opacity', 0);
-		this.serie.selectAll('.serie-arrow').attr('opacity', 0);
-		this.guideLine.attr('opacity', 0);
-		if (this.diffDot !== null) {
-			this.diffDot.select('circle').attr('opacity', 0);
-		}
-		if (this.diffLines !== null) {
-			this.diffLines.selectAll('line').classed('active', false);
-		}
-	},
-
 	emptyChart: function () {
 		// Remove all children of this.container
 		var children = this.svg.node().childNodes;
@@ -370,6 +379,20 @@ IaChart.prototype = {
 		this.emptyChart();
 		this.calculate();
 		this.buildSvg();
+	},
+
+	shiftIndex: function (dir) {
+		var nIdx = this.activeIdx;
+		if ( dir === 'up' ) {
+			nIdx = ( this.activeIdx < this.numPoints - 1 ) ? nIdx + 1 : this.numPoints - 1;
+		}
+		else { // dir === 'down'
+			nIdx = ( this.activeIdx > 0 ) ? nIdx - 1 : 0;
+		}
+
+		this.activeIdx = nIdx;
+
+		this.highlightPoint(nIdx);
 	},
 
 	getDiffColor: function (y, y1) {
