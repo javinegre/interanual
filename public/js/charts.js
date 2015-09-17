@@ -287,8 +287,7 @@ IaChart.prototype = {
 			.attr('fill', '#ffffff')
 			.attr('opacity', 0)
 			.attr('transform', this.translateStr(0, -10))
-			.on('mousemove', function () { _this.chartMouseMove.call( _this, d3.mouse(this) ); })
-			.on('mouseout', function () { _this.chartMouseOut.call( _this ); });
+			.on('mousemove', function () { _this.chartMouseMove.call( _this, d3.mouse(this) ); });
 
 		var serieColors = {};
 		this.keys.forEach(function (d) { serieColors[d] = _this.keysLen === 1 ? '#808080' : _this.color(d); });
@@ -303,18 +302,6 @@ IaChart.prototype = {
 		if ( this.activeIdx !== mIdx ) {
 			this.activeIdx = mIdx;
 			this.highlightPoint(mIdx);
-		}
-	},
-
-	chartMouseOut: function () {
-		this.serie.selectAll('.serie-dot').attr('opacity', 0);
-		this.serie.selectAll('.serie-arrow').attr('opacity', 0);
-		this.guideLine.attr('opacity', 0);
-		if (this.diffDot !== null) {
-			this.diffDot.select('circle').attr('opacity', 0);
-		}
-		if (this.diffLines !== null) {
-			this.diffLines.selectAll('line').classed('active', false);
 		}
 	},
 
