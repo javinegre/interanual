@@ -8,16 +8,10 @@
 
         <div class="info-col">
             <div id="info-block" class="info-block">
-
                 <h1 class="info-block-box">
                     <div class="l1">Inter</div>
                     <div class="l2">anual</div>
                 </h1>
-
-                <div class="info-block-box info-block-box-prev-year"></div>
-                <div class="info-block-box info-block-box-prev-month"></div>
-                <div class="info-block-box info-block-box-current"></div>
-
             </div>
 
             <div id="mode-selector">
@@ -57,18 +51,6 @@
             <span class="info-table-cell info-table-monhtly-diff <%= monhtlyTrend %> font-ms"><%= monhtlyDiff %></span>
             <span class="info-table-cell info-table-yearly-diff <%= yearlyTrend %> font-ms"><%= yearlyDiff %></span>
         </li>
-    </script>
-
-    <script type="text/template" id="info-box-tpl">
-        <div class="title"><%= title %></div>
-        <% if ( val !== null ) { %>
-            <% if ( diff !== null ) { %>
-                <div class="diff font-ms"><%= diff %></div>
-            <% } %>
-            <div class="val font-ms"><%= val %></div>
-        <% } else { %>
-            <div class="no-data">Sin datos</div>
-        <% } %>
     </script>
 
     <script type="text/javascript" src="vendor/jquery/dist/jquery.min.js"></script>

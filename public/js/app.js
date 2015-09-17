@@ -48,12 +48,10 @@ var ianual = {
 		this.activeMetrics = ['total'];
 		this.chartMode = 'interannual';
 
-		this.$infoBlock = $('#info-block');
 		this.$infoTable = $('#info-table');
 		this.$metricSelector = $('#metric-selector');
 
 		this.tpls = {
-			infoBox: _.template( $('#info-box-tpl').html() ),
 			infoTableRow: _.template( $('#info-table-row-tpl').html() ),
 			metricList: _.template( $('#metric-list-tpl').html() )
 		};
@@ -129,42 +127,7 @@ var ianual = {
 	},
 
 	udpateInfo: function (data) {
-		this.updateInfoBox(data.point);
 		this.updateInfoTable(data.table, moment(data.point.x).format('YYYY'));
-	},
-
-	updateInfoBox: function (data) {
-
-		var infoBlockData = {
-				currentDate: moment(data.x).format('YYYY-MMM'),
-				currentTotal: _.numberFormat(data.y),
-				prevYearDate: moment(data.x).subtract(1, 'year').format('YYYY-MMM'),
-				prevYear: false,
-			};
-
-		if ( data.y1y ) {
-			infoBlockData.prevYear = true;
-			infoBlockData.prevYearTotal = _.numberFormat(data.y1y);
-			infoBlockData.interannualValue = _.numberSigned(data.y - data.y1y);
-		}
-
-		ianual.$infoBlock.find('.info-block-box-current').html(ianual.tpls.infoBox({
-			title: moment(data.x).format('MMM \'YY'),
-			val: _.numberFormat(data.y),
-			diff: null
-		}));
-
-		ianual.$infoBlock.find('.info-block-box-prev-month').html(ianual.tpls.infoBox({
-			title: moment(data.x).subtract(1, 'month').format('MMM \'YY'),
-			val: _.numberFormat(data.y1m),
-			diff: ( _.numberFormat(data.y1m) !== null ) ? _.numberSigned(data.y - data.y1m) : null
-		}));
-
-		ianual.$infoBlock.find('.info-block-box-prev-year').html(ianual.tpls.infoBox({
-			title: moment(data.x).subtract(1, 'year').format('MMM \'YY'),
-			val: _.numberFormat(data.y1y),
-			diff: ( _.numberFormat(data.y1y) !== null ) ? _.numberSigned(data.y - data.y1y) : null
-		}));
 	},
 
 	padInfoTable: function (table) {
