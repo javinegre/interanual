@@ -53,6 +53,7 @@ var ianual = {
 
 		this.tpls = {
 			infoTableRow: _.template( $('#info-table-row-tpl').html() ),
+			infoTableHeader: _.template( $('#info-table-header-tpl').html() ),
 			metricList: _.template( $('#metric-list-tpl').html() )
 		};
 
@@ -105,6 +106,18 @@ var ianual = {
 
 	toggleChartMode: function () {
 		ianual.chartMode = $(this).val();
+		if ( ianual.chartMode == 'interannual' && ianual.activeMetrics.length > 1 ) {
+			ianual.activeMetrics = [ ianual.activeMetrics[0] ];
+		}
+		else if ( ianual.chartMode == 'comparative' && ianual.activeMetrics.length == 1 ) {
+			ianual.activeMetrics.push(
+				ianual.activeMetrics[0] != generalMetrics[0].key
+					? generalMetrics[0].key
+					: generalMetrics[1].key
+			);
+		}
+
+		ianual.updateView();
 	},
 
 	toggleMetricSelector: function () {
@@ -154,7 +167,10 @@ var ianual = {
 	},
 
 	updateInfoTable: function (data, activeYear) {
+		var month = moment(data[0].x);
+
 		data = this.padInfoTable( data.reverse() );
+
 		this.$infoTable.html(
 			data.map(function (d, i) {
 				var monthlyDiff = d.y1m !== null ? d.y - d.y1m : null,
@@ -172,6 +188,12 @@ var ianual = {
 				});
 			})
 		);
-		this.$infoTable.prepend( $('<li>').attr('class', 'info-table-header').text(moment(data[0].x).format('MMMM')) );
+
+		this.$infoTable.prepend(
+			ianual.tpls.infoTableHeader({
+				month: month.format('MMMM'),
+				active: month.format('M')
+			})
+		);
 	}
 };

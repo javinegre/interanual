@@ -295,7 +295,7 @@ var Scrapper = {
 			logPrepend = (new Date()).toLocaleString() + ' [ ' + this.fileId + ' ]: ',
 			options = {
 				method: 'HEAD',
-				host: xthis.getDownloadHostname(),
+				host: this.getDownloadHostname(),
 				path: this.getDownloadPath(),
 				port: 80
 			};
