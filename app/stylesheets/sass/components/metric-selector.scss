@@ -1,5 +1,17 @@
-#metric-selector {
-	clear: both;
+.metric-selector {
+	width: 80%;
+	float: left;
+
+	&-block {
+		width: calc(50% - 0.6em);
+		float: left;
+		padding-right: 0.6em;
+
+		&:last-of-type {
+			width: 50%;
+			padding-right: 0;
+		}
+	}
 
 	li.toggle {
 		color: #909090;

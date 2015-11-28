@@ -1,0 +1,31 @@
+.mode-selector {
+	width: calc(20% - 1em);
+	float: left;
+	padding-right: 1em;
+
+	.radio-selector {
+		padding: 0.4em;
+		border-radius: 4px;
+		color: #909090;
+		//cursor: pointer;
+
+		input {
+			position: relative;
+			top: -1px;
+			margin-right: 6px;
+		}
+
+		&.checked,
+		&:hover {
+			color: #202020;
+		}
+
+		&.checked {
+			background-color: #f6f6f6;
+		}
+
+		&:hover {
+			background-color: #fdfdfd;
+		}
+	}
+}

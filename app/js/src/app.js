@@ -117,6 +117,10 @@ var ianual = {
 			);
 		}
 
+		// Update view
+		$(this).closest('.mode-selector').find('.radio-selector').removeClass('checked');
+		$(this).closest('.radio-selector').addClass('checked');
+
 		ianual.updateView();
 	},
 

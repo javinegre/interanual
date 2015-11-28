@@ -1,21 +1,32 @@
+
+body {
+	background-color: #fafafa;
+}
+
+
+section#main {
+	margin: 0 12vw;
+	max-width: 1400px;
+}
+
+.block {
+	margin: 0 0 1em 0;
+	padding: 1em 1em;
+	background-color: white;
+	border-bottom: 2px solid #f0f0f0;
+
+	&.full-width {
+		margin-left: -10vw;
+		margin-right: -10vw;
+	}
+}
+
 #chart-wrapper {
-	width: 75%;
+	width: 70%;
 	float: right;
 }
 
 .info-col {
-	width: 25%;
+	width: 30%;
 	float: left;
-}
-
-.info-block {
-
-	&-box {
-		float: left;
-		width: 50%;
-		padding: 15px 0 15px;
-		text-align: center;
-	}
-
-
 }
