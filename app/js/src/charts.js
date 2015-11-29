@@ -306,18 +306,34 @@ IaChart.prototype = {
 	},
 
 	highlightPoint: function (mIdx) {
-		var _this = this;
-
-		var point = this.series[0].values[mIdx],
+		var _this = this,
+			point = this.series[0].values[mIdx],
 			pointColor = this.getDiffColor(point.y, point.y1y),
-			pointY = point.y1y === null ? this.y(point.y) : this.y(point.y1y);
+			pointY = point.y1y === null ? this.y(point.y) : this.y(point.y1y),
+			seriesLen = this.series.length,
+			tableData = [],
+			tableMode;
 
-		var tableData = [];
-		for ( var i = mIdx % 12 ; i < this.numPoints ; i += 12 ) {
-			tableData.push( this.series[0].values[i] );
+		if ( seriesLen > 1 ) {
+			tableMode = 'comparative';
+			for ( var i = 0 ; i < seriesLen ; i++ ) {
+				tableData.push({
+					color: _this.color(this.series[i].name),
+					name: this.series[i].name,
+					values: this.series[i].values[mIdx]
+				});
+			}
+		}
+		else {
+			tableMode = 'interannual';
+			for ( var i = mIdx % 12 ; i < this.numPoints ; i += 12 ) {
+				tableData.push( this.series[0].values[i] );
+			}
+
 		}
 
 		this.options.cb({
+			mode: tableMode,
 			point: point,
 			table: tableData
 		});

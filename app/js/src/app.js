@@ -53,6 +53,7 @@ var ianual = {
 
 		this.tpls = {
 			infoTableRow: _.template( $('#info-table-row-tpl').html() ),
+			infoTableCompRow: _.template( $('#info-table-comp-row-tpl').html() ),
 			infoTableHeader: _.template( $('#info-table-header-tpl').html() ),
 			metricList: _.template( $('#metric-list-tpl').html() )
 		};
@@ -153,7 +154,7 @@ var ianual = {
 	},
 
 	udpateInfo: function (data) {
-		this.updateInfoTable(data.table, moment(data.point.x).format('YYYY'));
+		this.updateInfoTable(data.table, moment(data.point.x).format('YYYY'), data.mode);
 	},
 
 	padInfoTable: function (table) {
@@ -170,13 +171,17 @@ var ianual = {
 		return table;
 	},
 
-	updateInfoTable: function (data, activeYear) {
-		var month = moment(data[0].x);
+	updateInfoTable: function (data, activeYear, mode) {
+		var mode = mode || 'interannual',
+			date,
+			headerData;
 
-		data = this.padInfoTable( data.reverse() );
+		if ( mode == 'interannual' ) {
+			date = moment(data[0].x);
 
-		this.$infoTable.html(
-			data.map(function (d, i) {
+			data = this.padInfoTable( data.reverse() );
+
+			data = data.map(function (d, i) {
 				var monthlyDiff = d.y1m !== null ? d.y - d.y1m : null,
 					yearlyDiff = d.y1y !== null ? d.y - d.y1y : null;
 
@@ -191,12 +196,35 @@ var ianual = {
 					yearlyTrend: yearlyDiff < 0 ? 'trend-pos' : ( (yearlyDiff > 0) ? 'trend-neg' : '' )
 				});
 			})
-		);
+		}
+		else {
+			date = moment(data[0].values.x);
+
+			data = data.map(function (d, i) {
+				var monthlyDiff = d.values.y1m !== null ? d.values.y - d.values.y1m : null,
+					yearlyDiff = d.values.y1y !== null ? d.values.y - d.values.y1y : null;
+				return ianual.tpls.infoTableCompRow({
+					color: d.color,
+					label: d.name,
+					total: d.values.y !== null ? _.numberFormat(d.values.y) : '-',
+					monhtlyDiff: monthlyDiff !== null ? _.numberSigned(monthlyDiff) : '-',
+					monhtlyTrend: monthlyDiff < 0 ? 'trend-pos' : ( (monthlyDiff > 0) ? 'trend-neg' : '' ),
+					yearlyDiff: yearlyDiff !== null ? _.numberSigned(yearlyDiff) : '-',
+					yearlyTrend: yearlyDiff < 0 ? 'trend-pos' : ( (yearlyDiff > 0) ? 'trend-neg' : '' )
+				});
+			});
+		}
+
+		this.$infoTable.removeClass (function (index, css) {
+			return (css.match (/(^|\s)mode-\S+/g) || []).join(' ');
+		}).addClass('mode-' + mode);
+
+		this.$infoTable.html( data );
 
 		this.$infoTable.prepend(
 			ianual.tpls.infoTableHeader({
-				month: month.format('MMMM'),
-				active: month.format('M')
+				title: mode == 'interannual' ? date.format('MMMM') : date.format('MMMM YYYY'),
+				active: date.format('M')
 			})
 		);
 	}

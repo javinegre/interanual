@@ -6,7 +6,7 @@
 	&-header {
 		position: relative;
 		margin: 0 0.4em;
-		padding: 0.4em 0.6em 1em;
+		padding: 0.4em 0 1em;
 		font-weight: 300;
 
 		&-border {
@@ -36,14 +36,16 @@
 
 	&-row {
 		line-height: 1em;
-		margin: 0 0.4em;
-		padding: 0 0.6em;
+		padding: 0 0.4em;
 		border-radius: 4px;
-		opacity: 0.25;
 		transition: all ease 120ms;
 
+		.info-table.mode-interannual & {
+			opacity: 0.25;
+		}
+
 		&:hover,
-		&.active {
+		.info-table.mode-interannual &.active {
 			background-color: #f6f6f6;
 			opacity: 1;
 
@@ -65,6 +67,15 @@
 		width: 12%;
 		font-size: 0.75em;
 		font-weight: 400;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+
+		.label-bullet {
+			position: relative;
+			top: 1px;
+			font-size: 1.2em;
+		}
 	}
 
 	&-total {
@@ -83,6 +94,22 @@
 		text-align: right;
 		width: 33%;
 		font-size: 1em;
+	}
+
+	.info-table.mode-comparative &-label {
+		width: 30%;
+	}
+
+	.info-table.mode-comparative &-total {
+		width: 19%;
+	}
+
+	.info-table.mode-comparative &-monhtly-diff {
+		width: 19%;
+	}
+
+	.info-table.mode-comparative &-yearly-diff {
+		width: 26%;
 	}
 
 	&-monhtly-diff,
@@ -110,7 +137,7 @@
 		}
 	}
 
-	&:hover {
+	&.mode-interannual:hover {
 		.info-table-row {
 			opacity: .8;
 			transition: all ease 260ms;
