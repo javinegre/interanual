@@ -54,6 +54,19 @@ module.exports = function(grunt) {
 				}
 			}
 		},
+		//
+		// Html
+		//
+		assemble: {
+			options: {
+				partials: ['app/views/partials/**/*.hbs'],
+				layout: ['app/views/layouts/default.hbs']
+			},
+			site: {
+				src: ['app/views/index.hbs'],
+				dest: 'app/public/index.hbs'
+			}
+		},
 		watch: {
 			css: {
 				files: 'app/stylesheets/sass/**/*.scss',
@@ -63,16 +76,21 @@ module.exports = function(grunt) {
 				files: 'app/js/src/**/*.js',
 				tasks: ['concat:js-app']
 			},
+			html: {
+				files: 'app/views/**/*.hbs',
+				tasks: ['assemble']
+			}
 		}
 	});
 
+	grunt.loadNpmTasks('grunt-assemble');
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-sass');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	grunt.registerTask('dev', [ 'concat:js-vendor', 'concat:js-app', 'sass', 'watch' ]);
-	grunt.registerTask('prod', [ 'concat:js-vendor', 'concat:js-app', 'sass', 'uglify' ]);
+	grunt.registerTask('dev', [ 'concat:js-vendor', 'concat:js-app', 'sass', 'assemble', 'watch' ]);
+	grunt.registerTask('prod', [ 'concat:js-vendor', 'concat:js-app', 'sass', 'assemble', 'uglify' ]);
 
 	grunt.registerTask('default', [ 'dev' ]);
 
