@@ -7,10 +7,10 @@ module.exports = function(grunt) {
 		'app/js/src/app.js'
 	],
 		vendorJs = [
-		'app/js/vendor/d3/d3.min.js',
-		'app/js/vendor/jquery/dist/jquery.min.js',
-		'app/js/vendor/moment/min/moment.min.js',
-		'app/js/vendor/underscore/underscore-min.js'
+		'node_modules/d3/d3.min.js',
+		'node_modules/jquery/dist/jquery.min.js',
+		'node_modules/moment/min/moment.min.js',
+		'node_modules/underscore/underscore-min.js'
 	];
 
 	grunt.initConfig({
