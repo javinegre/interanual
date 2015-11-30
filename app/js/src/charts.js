@@ -1,7 +1,9 @@
 
 var IaChart = function ( options ) {
+	this.$container = null;
+
 	this.margin = {top: 20, right: 20, bottom: 30, left: 20};
-	this.oWidth = document.getElementById('chart-wrapper').offsetWidth;
+	this.oWidth = 400;
 	this.oHeight = 400;
 	this.width = null;
 	this.height = null;
@@ -9,6 +11,7 @@ var IaChart = function ( options ) {
 	this.csvData = null;
 
 	this.defaults = {
+		selector: 'chart-wrapper', // ID selector
 		keys: ['total'],
 		onLoad: function () {}
 	};
@@ -45,6 +48,8 @@ IaChart.prototype = {
 
 		this.options = this.extend(this.defaults, this.options);
 
+		this.$container = document.getElementById( this.options.selector );
+
 		d3.csv('data/interanual.csv', function (csvData) {
 			_this.csvData = csvData.reverse();
 			_this.build();
@@ -53,6 +58,7 @@ IaChart.prototype = {
 
 	build: function () {
 		var _this = this;
+		this.oWidth = this.$container.offsetWidth;
 		this.width = this.oWidth - this.margin.left - this.margin.right;
 		this.height = this.oHeight - this.margin.top - this.margin.bottom;
 
@@ -74,7 +80,7 @@ IaChart.prototype = {
 				return _this.y(d.y);
 			});
 
-		this.svg = d3.select('#chart-wrapper').append('svg')
+		this.svg = d3.select(this.$container).append('svg')
 			.attr('width', this.oWidth)
 			.attr('height', this.oHeight)
 			.attr('class', 'ianual-chart')
@@ -368,11 +374,20 @@ IaChart.prototype = {
 	},
 
 	emptyChart: function () {
-		// Remove all children of this.container
+		// Remove all children of this.svg
 		var children = this.svg.node().childNodes;
 		var count = children.length;
 		for (var i = count - 1 ; i >= 0 ; i--) {
 			// removing children[i] crashes in iPad, selecting the node with d3 and removing it works!!
+			d3.select(children[i]).remove();
+		}
+	},
+
+	emptyContainer: function () {
+		this.emptyChart();
+		var children = d3.select(this.$container).node().childNodes;
+		var count = children.length;
+		for (var i = count - 1 ; i >= 0 ; i--) {
 			d3.select(children[i]).remove();
 		}
 	},
@@ -382,6 +397,11 @@ IaChart.prototype = {
 		this.emptyChart();
 		this.calculate();
 		this.buildSvg();
+	},
+
+	resize: function () {
+		this.emptyContainer();
+		this.build();
 	},
 
 	shiftIndex: function (dir) {
