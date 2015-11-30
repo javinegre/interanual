@@ -1,0 +1,16 @@
+{
+  "js": {
+    "app": [
+      "app/js/src/mixins.js",
+      "app/js/src/charts.js",
+      "app/js/src/app.js"
+    ],
+    "vendor": [
+      "node_modules/d3/d3.min.js",
+      "node_modules/jquery/dist/jquery.min.js",
+      "node_modules/moment/min/moment.min.js",
+      "node_modules/underscore/underscore-min.js"
+    ]
+  }
+}
+

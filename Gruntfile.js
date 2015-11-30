@@ -1,17 +1,7 @@
 
 module.exports = function(grunt) {
 
-	var appJs = [
-		'app/js/src/mixins.js',
-		'app/js/src/charts.js',
-		'app/js/src/app.js'
-	],
-		vendorJs = [
-		'node_modules/d3/d3.min.js',
-		'node_modules/jquery/dist/jquery.min.js',
-		'node_modules/moment/min/moment.min.js',
-		'node_modules/underscore/underscore-min.js'
-	];
+	var includes = grunt.file.readJSON('./grunt/includes.json');
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -33,11 +23,11 @@ module.exports = function(grunt) {
 				separator: "/*  #############################################  */"
 			},
 			'js-app': {
-				src: appJs,
+				src: includes.js.app,
 				dest: 'app/public/js/app.js',
 			},
 			'js-vendor': {
-				src: vendorJs,
+				src: includes.js.vendor,
 				dest: 'app/public/js/libraries.js',
 			},
 		},
