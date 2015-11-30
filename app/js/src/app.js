@@ -28,10 +28,16 @@ var ianual = {
 		$('[name="chart-mode"]').on('change', this.toggleChartMode);
 		this.$metricSelector.delegate('li.toggle', 'click', this.toggleMetricSelector);
 		$(document).on('keydown', this.keyboardControl);
+		$(window).resize( _.debounce( $.proxy(this.windowResize, this), 40 ) );
+	},
+
+	windowResize: function () {
+		this.chart.resize();
 	},
 
 	initChart: function () {
 		this.chart = new IaChart({
+			selector: 'chart-wrapper', // ID selector
 			onLoad: this.onChartLoad,
 			cb: $.proxy(this.udpateInfo, this)
 		});
