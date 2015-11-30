@@ -1,6 +1,8 @@
 {
   "js": {
     "app": [
+      "app/js/src/i18n/es.js",
+      "app/js/src/data.js",
       "app/js/src/mixins.js",
       "app/js/src/charts.js",
       "app/js/src/app.js"

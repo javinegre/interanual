@@ -79,8 +79,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-watch');
 
-	grunt.registerTask('dev', [ 'concat:js-vendor', 'concat:js-app', 'sass', 'assemble', 'watch' ]);
-	grunt.registerTask('prod', [ 'concat:js-vendor', 'concat:js-app', 'sass', 'assemble', 'uglify' ]);
+	grunt.registerTask('dev', [ 'concat', 'sass', 'assemble', 'watch' ]);
+	grunt.registerTask('prod', [ 'concat', 'sass', 'assemble', 'uglify' ]);
 
 	grunt.registerTask('default', [ 'dev' ]);
 
