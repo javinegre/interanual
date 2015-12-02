@@ -9,6 +9,8 @@ var ianual = {
 		this.activeMetrics = ['total'];
 		this.chartMode = 'interannual';
 
+		this.metricsByKey = _.extend( _.indexBy(generalMetrics, 'key'), _.indexBy(regionalMetrics, 'key') );
+
 		this.$infoTable = $('#info-table');
 		this.$metricSelector = $('#metric-selector');
 
@@ -142,7 +144,8 @@ var ianual = {
 	},
 
 	updateInfoTable: function (data, activeYear, mode) {
-		var mode = mode || 'interannual',
+		var _this = this,
+			mode = mode || 'interannual',
 			date,
 			headerData;
 
@@ -175,7 +178,7 @@ var ianual = {
 					yearlyDiff = d.values.y1y !== null ? d.values.y - d.values.y1y : null;
 				return ianual.tpls.infoTableCompRow({
 					color: d.color,
-					label: d.name,
+					label: _this.metricsByKey[d.name].title,
 					total: d.values.y !== null ? _.numberFormat(d.values.y) : '-',
 					monhtlyDiff: monthlyDiff !== null ? _.numberSigned(monthlyDiff) : '-',
 					monhtlyTrend: monthlyDiff < 0 ? 'trend-pos' : ( (monthlyDiff > 0) ? 'trend-neg' : '' ),
@@ -193,7 +196,9 @@ var ianual = {
 
 		this.$infoTable.prepend(
 			ianual.tpls.infoTableHeader({
-				title: mode == 'interannual' ? date.format('MMMM') : date.format('MMMM YYYY'),
+				title: mode == 'interannual'
+					? this.metricsByKey[ this.activeMetrics[0]].title + ' - ' + date.format('MMMM')
+					: date.format('MMMM YYYY'),
 				active: date.format('M')
 			})
 		);
