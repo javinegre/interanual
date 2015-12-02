@@ -163,9 +163,20 @@ IaChart.prototype = {
 	buildSvg: function () {
 		var _this = this;
 
+		this.yearBg = this.svg.append('g')
+			.attr('class', 'year-bg');
+
 		this.axisLines = this.svg.append('g')
 			.attr('class', 'axis-lines');
 
+		this.yearBg.selectAll('.year-bg')
+			.data([ 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 ])
+			.enter().append('svg:rect').filter(function (d) { return d % 2 == 0; })
+			.attr('x', function (d) { return _this.x(moment([d, 0, 1]).subtract(15, 'days').unix() * 1000); })
+			.attr('y', 0)
+			.attr('width', function (d) { return _this.x(moment([d, 11, 15]).unix() * 1000) - _this.x(moment([d, 0, 1]).subtract(15, 'days').unix() * 1000); })
+			.attr('height', _this.y.range()[0])
+			.attr('fill', '#fdfdfd');
 		this.axisLines.selectAll('.axis-lines')
 			.data([ 1e6, 2e6, 3e6, 4e6, 5e6 ])
 			.enter().append('line')
