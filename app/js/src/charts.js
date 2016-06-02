@@ -170,7 +170,7 @@ IaChart.prototype = {
 			.attr('class', 'axis-lines');
 
 		this.yearBg.selectAll('.year-bg')
-			.data([ 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 ])
+			.data(this.getYears())
 			.enter().append('svg:rect').filter(function (d) { return d % 2 == 0; })
 			.attr('x', function (d) { return _this.x(moment([d, 0, 1]).subtract(15, 'days').unix() * 1000); })
 			.attr('y', 0)
@@ -201,7 +201,7 @@ IaChart.prototype = {
 			.text(function (d) { return (d / 1e6) + 'M'; });
 
 		this.axisLines.selectAll('.axis-text')
-			.data([ 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015 ])
+			.data(this.getYears())
 			.enter().append('text')
 			.attr('x', function (d) { return _this.x(moment([d, 6, 1]).unix() * 1000); })
 			.attr('y', _this.y.range()[0] + 16)
@@ -437,6 +437,22 @@ IaChart.prototype = {
 
 	translateStr: function (x, y) {
 		return 'translate(' + [x, y].join(',') + ')';
+	},
+
+	getYears: function () {
+		var years = [],
+			ini = this.x.domain()[0].getFullYear(),
+			fin = this.x.domain()[1].getFullYear();
+
+		if (ini > fin) {
+			return years;
+		}
+
+		for (var i = ini ; i <= fin ; i++) {
+			years.push(i);
+		}
+
+		return years;
 	},
 
 	extend: function(out) {
