@@ -1,0 +1,15 @@
+svg.ianual-chart {
+	font-family: 'Bitter', serif;
+
+	text {
+		fill: #808080;
+		font-size: 12px;
+	}
+
+	line{
+		&.diff-line.active {
+			opacity: 1;
+			stroke-width: 3px;
+		}
+	}
+}
