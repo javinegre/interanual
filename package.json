@@ -21,6 +21,7 @@
     "grunt-contrib-watch": "~0.6.1",
     "html-webpack-plugin": "^2.29.0",
     "jquery": "~2.1.4",
+    "lodash": "^4.17.4",
     "moment": "~2.10.6",
     "node-sass": "^4.5.3",
     "react": "^15.6.1",
