@@ -18,7 +18,7 @@ export default class IaChart extends React.Component {
       node: this.$svg,
       data: this.state.data,
       onLoad: this.props.onLoad.bind(this),
-      cb: data => {}
+      cb: this.props.onDataReceived.bind(this)
     });
 
     d3.csv('interanual.csv', (csvData) => {
