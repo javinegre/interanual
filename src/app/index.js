@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import _ from 'lodash';
 
+import IaChart from './components/ia-chart';
 import ModeSelector from './components/mode-selector';
 import MetricSelector from './components/metric-selector';
 
@@ -14,7 +15,7 @@ class Interanual extends React.Component {
       metrics: ['total'],
       mode: 'interannual',
       metricColors: {}
-    }
+    };
   }
 
   updateMode (mode) {
@@ -31,6 +32,11 @@ class Interanual extends React.Component {
     this.setState({ metrics: newMetrics });
   }
 
+  onChartLoad (data) {
+    // Wait for all components to render
+     window.setTimeout(() => { this.setState({ metricColors: data.colors }); }, 10);
+  }
+
   render () {
     return (
       <div>
@@ -39,11 +45,8 @@ class Interanual extends React.Component {
             <ul id="info-table" className="info-table"></ul>
           </div>
 
-          <div id="chart-wrapper">
-            -- {this.state.mode}
-            <br />
-            -- {this.state.metrics.join('|')}
-          </div>
+          <IaChart metrics={this.state.metrics}
+            onLoad={this.onChartLoad.bind(this)} />
         </div>
 
         <div className="chart-options block clearfix">
