@@ -34,13 +34,13 @@ export default class MetricSelector extends React.Component {
         <div className="metric-selector-block clearfix">
           <h4>General</h4>
           <ul className="general-selector">
-            {this.getButtons(metrics.general)}
+            {this.getButtons(metrics.filter( item => item.type === 'general' ))}
           </ul>
         </div>
         <div className="metric-selector-block clearfix">
           <h4>Autonomias</h4>
           <ul className="regional-selector">
-            {this.getButtons(metrics.regional)}
+            {this.getButtons(metrics.filter( item => item.type === 'regional' ))}
           </ul>
         </div>
       </div>
