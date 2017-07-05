@@ -1,6 +1,3 @@
-# index.html is generated using Grunt, run: grunt assemble
-app/public/index.html
-
 dist/
 
 .sass-cache/
