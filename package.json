@@ -30,7 +30,7 @@
   "scripts": {
     "build": "webpack",
     "start": "node server.js",
-    "postinstall": "./node_modules/grunt-cli/bin/grunt prod",
+    "postinstall": "./node_modules/webpack/bin/webpack.js -p",
     "watch": "webpack --watch"
   },
   "repository": {
