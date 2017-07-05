@@ -1,5 +1,6 @@
 import d3 from 'd3';
 import moment from 'moment';
+import _ from 'lodash';
 
 var D3IaChart = function ( options ) {
   this.$container = null;
@@ -54,6 +55,8 @@ D3IaChart.prototype = {
     this.$container = document.getElementById( this.options.selector );
 
     this.$node = this.options.node;
+
+    this.registerEvents();
   },
 
   setData: function (data) {
@@ -409,34 +412,13 @@ D3IaChart.prototype = {
     }
   },
 
-  emptyContainer: function () {
-    this.emptyChart();
-    var children = d3.select(this.$container).node().childNodes;
-    var count = children.length;
-    for (var i = count - 1 ; i >= 0 ; i--) {
-      d3.select(children[i]).remove();
-    }
-  },
-
-  update: function (options) {
-    this.options = this.extend(this.options, options);
-    this.emptyChart();
-    this.calculate();
-    this.buildSvg();
-  },
-
-  resize: function () {
-    this.emptyContainer();
-    this.build();
-  },
-
-  shiftIndex: function (dir) {
+  shiftIndex: function (dir, amount) {
     var nIdx = this.activeIdx;
     if ( dir === 'up' ) {
-      nIdx = ( this.activeIdx < this.numPoints - 1 ) ? nIdx + 1 : this.numPoints - 1;
+      nIdx = ( nIdx + amount <= this.numPoints - 1 ) ? nIdx + amount : nIdx;
     }
     else { // dir === 'down'
-      nIdx = ( this.activeIdx > 0 ) ? nIdx - 1 : 0;
+      nIdx = ( nIdx - amount >= 0 ) ? nIdx - amount : nIdx;
     }
 
     this.activeIdx = nIdx;
@@ -475,6 +457,22 @@ D3IaChart.prototype = {
     }
 
     return years;
+  },
+
+  registerEvents: function () {
+    window.addEventListener('keydown', (ev) => {
+      if ( document.activeElement.tagName.toLowerCase() === 'input' ) {
+        // If input focused ignore action.
+        return;
+      }
+      if ( ev.keyCode >= 37 && ev.keyCode <= 40 ) {
+        var dir = ev.keyCode === 38 || ev.keyCode === 39 ? 'up' : 'down';
+        var amount = ev.keyCode === 37 || ev.keyCode === 39 ? 1 : 12;
+        this.shiftIndex( dir, amount );
+      }
+    });
+
+    window.addEventListener('resize', _.debounce(this.build.bind(this), 120));
   },
 
   extend: function(out) {
