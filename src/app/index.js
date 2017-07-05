@@ -7,6 +7,8 @@ import DataTable from './components/data-table';
 import ModeSelector from './components/mode-selector';
 import MetricSelector from './components/metric-selector';
 
+import metricList from './data/metrics';
+
 import '../styles/style.scss';
 
 class Interanual extends React.Component {
@@ -21,17 +23,35 @@ class Interanual extends React.Component {
   }
 
   updateMode (mode) {
-    this.setState({ mode });
-    this.updateMetrics(null);
+    this.updateMetrics(null, mode);
   }
 
-  updateMetrics (metric) {
+  updateMetrics (metric, mode) {
     const newMetric = metric || _.head(this.state.metrics);
-    const newMetrics = this.state.mode === 'interannual'
-      ? [newMetric]
-      : _.xor(this.state.metrics, [newMetric]);
+    const newMode = mode || this.state.mode;
 
-    this.setState({ metrics: newMetrics });
+    let newMetrics;
+
+    if (newMode === 'interannual') {
+      newMetrics = [newMetric];
+    } else {
+      newMetrics = _.xor(this.state.metrics, [newMetric]);
+
+      if (newMetrics.length === 0) {
+        newMetrics = [_.nth(metricList, 0).key, _.nth(metricList, 1).key];
+      }
+      else if (newMetrics.length === 1 && _.head(newMetrics) == _.nth(metricList, 0).key) {
+        newMetrics.push(_.nth(metricList, 1).key);
+      }
+      else if (newMetrics.length === 1) {
+        newMetrics.push(_.nth(metricList, 0).key);
+      }
+    }
+
+    this.setState({
+      mode: newMode,
+      metrics: newMetrics
+    });
   }
 
   onChartLoad (data) {

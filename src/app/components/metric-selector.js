@@ -21,7 +21,7 @@ export default class MetricSelector extends React.Component {
       return <li
         className={this.getMetricClass(item.key)}
         style={this.getMetricColor(item.key)}
-        onClick={this.props.onChange.bind(this, item.key)}
+        onClick={this.props.onChange.bind(this, item.key, null)}
         key={item.key}>
         {item.title}
       </li>
