@@ -30,7 +30,7 @@
   "scripts": {
     "build": "webpack",
     "start": "node server.js",
-    "postinstall": "./node_modules/webpack/bin/webpack.js -p",
+    "heroku-postbuild": "./node_modules/webpack/bin/webpack.js -p --progress",
     "watch": "webpack --watch"
   },
   "repository": {
@@ -41,5 +41,9 @@
   "license": "BSD-2-Clause",
   "bugs": {
     "url": "https://github.com/javiscriptme/interanual/issues"
+  },
+  "engines": {
+    "node": "7.7.4",
+    "npm": "4.1.2"
   }
 }
