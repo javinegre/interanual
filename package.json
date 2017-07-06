@@ -19,6 +19,7 @@
     "node-sass": "^4.5.3",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
+    "rimraf": "^2.6.1",
     "sass-loader": "^6.0.6",
     "webpack": "^3.0.0"
   },
@@ -28,9 +29,10 @@
     "xlsjs": "~0.7.5"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "npm run clean && webpack -p",
+    "clean": "rimraf dist",
     "start": "node server.js",
-    "heroku-postbuild": "./node_modules/webpack/bin/webpack.js -p --progress",
+    "heroku-postbuild": "npm run clean && ./node_modules/webpack/bin/webpack.js -p --progress",
     "watch": "webpack --watch"
   },
   "repository": {
