@@ -53,7 +53,7 @@ var Scrapper = {
 
 	getDownloadPath: function () {
 		var year = this.fileId.split('-')[0],
-			basePath = '/contenidos/que_es_el_sepe/estadisticas/datos_avance/datos/',
+			basePath = '/SiteSepe/contenidos/que_es_el_sepe/estadisticas/datos_avance/datos/',
 			fileName = this.fileId.replace('-', ''),
 			downloadPath;
 
@@ -210,7 +210,10 @@ var Scrapper = {
 	},
 
 	isXlsFile: function (contentType) {
-		return contentType === 'application/vnd.ms-excel' || contentType === 'application/vnd.ms-office';
+		// TODO: improve check below
+		return contentType === 'application/vnd.ms-excel'
+			|| contentType === 'application/vnd.ms-office'
+			|| contentType === 'application/vnd.ms-excel;charset=UTF-8';
 	},
 
 	log: function (message, type) {
