@@ -14,7 +14,7 @@
     "express": "~4.12.3",
     "extract-text-webpack-plugin": "^2.1.2",
     "html-webpack-plugin": "^2.29.0",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "moment": "^2.10.6",
     "node-sass": "^4.5.3",
     "react": "^15.6.1",
