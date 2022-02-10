@@ -16,7 +16,7 @@
     "html-webpack-plugin": "^2.29.0",
     "lodash": "^4.17.4",
     "moment": "^2.10.6",
-    "node-sass": "^4.5.3",
+    "node-sass": "^7.0.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "rimraf": "^2.6.1",
